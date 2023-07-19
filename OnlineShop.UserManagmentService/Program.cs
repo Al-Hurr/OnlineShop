@@ -6,7 +6,6 @@ using OnlineShop.Library.Data;
 using OnlineShop.Library.UserManagmentService.Models;
 
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-//var isDocker = environment == EnvironmentNames
 
 var builder = WebApplication.CreateBuilder(args);
 
