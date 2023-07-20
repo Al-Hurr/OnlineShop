@@ -74,6 +74,18 @@ namespace OnlineShop.UserManagmentService.Controllers
             return await _userManager.ChangePasswordAsync(userForUpdate, request.CurrentPassword, request.NewPassword);
         }
 
+        [HttpPost(RepoActions.AddToRole)]
+        public async Task<IdentityResult> AddToRole(AddRemoveRoleRequest request)
+        {
+            var userForUpdate = await _userManager.FindByNameAsync(request.UserName);
+            if (userForUpdate == null)
+            {
+                return UserNotFound(request.UserName);
+            }
+
+            return await _userManager.AddToRoleAsync(userForUpdate, request.RoleName);
+        }
+
         [HttpPost(RepoActions.AddToRoles)]
         public async Task<IdentityResult> AddToRoles(AddRemoveRolesRequest request)
         {
