@@ -32,13 +32,13 @@ namespace OnlineShop.Library.Data.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "FirstName",
                 table: "AspNetUsers",
-                type: "nvarchar(max)",
+                type: "nvarchar(256)",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "LastName",
                 table: "AspNetUsers",
-                type: "nvarchar(max)",
+                type: "nvarchar(256)",
                 nullable: true);
 
             migrationBuilder.CreateTable(
