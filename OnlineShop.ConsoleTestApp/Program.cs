@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OnlineShop.ConsoleTestApp;
 using OnlineShop.Library.Options;
 
 Console.WriteLine("Hello, World!");
@@ -10,6 +11,8 @@ Console.WriteLine("Hello, World!");
 var builder = new HostBuilder()
     .ConfigureServices((hostContaxt, services) =>
     {
+        services.AddTransient<AuthenticationServiceTest>();
+
         var configurationBuilder = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json", optional: false);
@@ -34,10 +37,18 @@ using(var serviceScope = host.Services.CreateScope())
 
     try
     {
+        var service = services.GetRequiredService<AuthenticationServiceTest>();
 
+        string usersResult = await service.RunUsersClientTests(Environment.GetCommandLineArgs());
+        string rolesResult = await service.RunRolesClientTests(Environment.GetCommandLineArgs());
+
+        Console.WriteLine(usersResult);
+        Console.WriteLine(rolesResult);
     }
     catch (Exception ex)
     {
         Console.WriteLine($"Error occured: {ex.Message}");
     }
 }
+
+Console.ReadKey();
