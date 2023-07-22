@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OnlineShop.Library.Options;
 
 Console.WriteLine("Hello, World!");
 
@@ -11,8 +12,12 @@ var builder = new HostBuilder()
     {
         var configurationBuilder = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", optional: false)
-        .Build();
+        .AddJsonFile("appsettings.json", optional: false);
+
+        IConfiguration configuration = configurationBuilder.Build();
+
+        services.Configure<IdentityServerApiOptions>(configuration.GetSection(IdentityServerApiOptions.SectionName));
+        services.Configure<ServiceAddressOptions>(configuration.GetSection(ServiceAddressOptions.SectionName));
     })
     .ConfigureLogging(logging =>
     {
