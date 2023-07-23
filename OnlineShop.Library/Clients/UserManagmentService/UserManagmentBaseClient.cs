@@ -14,7 +14,7 @@ namespace OnlineShop.Library.Clients.UserManagmentService
         public UserManagmentBaseClient(HttpClient httpClient, IOptions<ServiceAddressOptions> opts)
         {
             HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            HttpClient.BaseAddress = new Uri(opts.Value.IdentityServer);
+            HttpClient.BaseAddress = new Uri(opts.Value.UserManagmentService);
         }
 
         protected async Task<IdentityResult> SendPostRequest<TRequest>(TRequest request, string path)

@@ -37,8 +37,9 @@ namespace OnlineShop.ConsoleTestApp
             _usersClient.HttpClient.SetBearerToken(token.AccessToken);
 
             var userName = "UserFromTestApp";
-            var roleName = "RoleFromTestApp";
-            var roleNames = new[] { "RoleFromTestApp", "RoleFromTestApp2" };
+            // ранее добавленные роли в бд
+            var roleName = "testrole";
+            var roleNames = new[] { "testrole", "newrole" };
 
             var addResult = await _usersClient.Add(new CreateUserRequest
             {
@@ -85,7 +86,7 @@ namespace OnlineShop.ConsoleTestApp
 
             Console.WriteLine($"Update result: {updateUserResult.Succeeded}");
             Thread.Sleep(1000);
-
+            // false
             var addToRoleResult = await _usersClient.AddToRole(new AddRemoveRoleRequest
             {
                 UserName = userName,
@@ -112,7 +113,7 @@ namespace OnlineShop.ConsoleTestApp
 
             Console.WriteLine($"AddToRoles result: {addToRolesResult.Succeeded}");
             Thread.Sleep(1000);
-
+            // false
             var removeFromRolesResult = await _usersClient.RemoveFromRoles(new AddRemoveRolesRequest
             {
                 UserName = userName,
@@ -164,6 +165,11 @@ namespace OnlineShop.ConsoleTestApp
             var updateRoleResult = await _rolesClient.Update(roleName, role);
 
             Console.WriteLine($"Update result: {updateRoleResult.Succeeded}");
+            Thread.Sleep(1000);
+
+            var removeRoleResult = await _rolesClient.Remove(role);
+
+            Console.WriteLine($"Remove result: {removeRoleResult.Succeeded}");
             Thread.Sleep(1000);
 
             return await Task.FromResult("Ok");
