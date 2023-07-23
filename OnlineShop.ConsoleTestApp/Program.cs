@@ -1,17 +1,19 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OnlineShop.ConsoleTestApp;
+using OnlineShop.Library.Clients.IdentityServer;
+using OnlineShop.Library.Clients.UserManagmentService;
 using OnlineShop.Library.Options;
-
-Console.WriteLine("Hello, World!");
 
 var builder = new HostBuilder()
     .ConfigureServices((hostContaxt, services) =>
     {
         services.AddTransient<AuthenticationServiceTest>();
+        services.AddHttpClient<UsersClient>();
+        services.AddHttpClient<RolesClient>();
+        services.AddHttpClient<IdentityServerClient>();
 
         var configurationBuilder = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
