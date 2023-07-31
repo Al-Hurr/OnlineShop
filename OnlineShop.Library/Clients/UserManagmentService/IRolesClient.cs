@@ -1,6 +1,5 @@
-﻿
-using Microsoft.AspNetCore.Identity;
-using OnlineShop.Library.UserManagmentService;
+﻿using Microsoft.AspNetCore.Identity;
+using OnlineShop.Library.UserManagmentService.Responses;
 
 namespace OnlineShop.Library.Clients.UserManagmentService
 {

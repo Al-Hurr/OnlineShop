@@ -1,5 +1,5 @@
 ﻿
-namespace OnlineShop.Library.UserManagmentService
+namespace OnlineShop.Library.UserManagmentService.Responses
 {
     public class UserManagmentServiceResponse<T>
     {

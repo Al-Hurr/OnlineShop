@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Options;
 using OnlineShop.Library.Constants;
 using OnlineShop.Library.Options;
-using OnlineShop.Library.UserManagmentService;
 using OnlineShop.Library.UserManagmentService.Models;
 using OnlineShop.Library.UserManagmentService.Requests;
+using OnlineShop.Library.UserManagmentService.Responses;
 
 namespace OnlineShop.Library.Clients.UserManagmentService
 {

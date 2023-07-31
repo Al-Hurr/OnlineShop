@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OnlineShop.Library.Options;
 using OnlineShop.Library.UserManagmentService;
+using OnlineShop.Library.UserManagmentService.Responses;
 using System.Text;
 
 namespace OnlineShop.Library.Clients.UserManagmentService
@@ -25,8 +26,12 @@ namespace OnlineShop.Library.Clients.UserManagmentService
 
             if (requetResult.IsSuccessStatusCode)
             {
-                var response = await requetResult.Content.ReadAsStringAsync();
-                return IdentityResult.Success;
+                var responseStr = await requetResult.Content.ReadAsStringAsync();
+                var response = JsonConvert.DeserializeObject<IdentityResultDto>(responseStr)!;
+                var result = response.Succeeded 
+                    ? IdentityResult.Success
+                    : IdentityResult.Failed(response.Errors.ToArray());
+                return result;
             }
 
             return IdentityResult.Failed(
