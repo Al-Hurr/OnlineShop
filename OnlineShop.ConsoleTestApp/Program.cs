@@ -8,7 +8,7 @@ using OnlineShop.Library.Clients.UserManagmentService;
 using OnlineShop.Library.Options;
 
 var builder = new HostBuilder()
-    .ConfigureServices((hostContaxt, services) =>
+    .ConfigureServices((hostConext, services) =>
     {
         services.AddTransient<AuthenticationServiceTest>();
         services.AddHttpClient<UsersClient>();

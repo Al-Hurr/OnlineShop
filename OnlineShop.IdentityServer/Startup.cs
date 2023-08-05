@@ -3,20 +3,21 @@
 
 
 using IdentityServer4;
-using OnlineShop.Library.Data;
-using OnlineShop.Library.UserManagmentService.Models;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
+using OnlineShop.Library.Constants;
+using OnlineShop.Library.Data;
+using OnlineShop.Library.UserManagmentService.Models;
 using System.Linq;
 using System.Reflection;
-using OnlineShop.Library.Constants;
 
 namespace OnlineShop.IdentityServer
 {
@@ -45,18 +46,40 @@ namespace OnlineShop.IdentityServer
                 .AddEntityFrameworkStores<UsersDbContext>()
                 .AddDefaultTokenProviders();
 
-            var builder = services.AddIdentityServer()
-                .AddConfigurationStore(opts =>
-                {
-                    opts.ConfigureDbContext = b => b.UseSqlServer(identityServerConnectionStr,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
-                })
-                .AddOperationalStore(opts =>
-                {
-                    opts.ConfigureDbContext = b => b.UseSqlServer(identityServerConnectionStr, 
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
-                })
-                .AddAspNetIdentity<ApplicationUser>();
+            var builder = services.AddIdentityServer(options =>
+            {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+
+                // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
+                options.EmitStaticAudienceClaim = true;
+            })
+            .AddConfigurationStore(opts =>
+            {
+                opts.ConfigureDbContext = b => b.UseSqlServer(identityServerConnectionStr,
+                    sql =>
+                    {
+                        sql.MigrationsAssembly(migrationsAssembly);
+                        sql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    })
+                .ConfigureWarnings(warnings =>
+                warnings.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning));
+            })
+            .AddOperationalStore(options =>
+            {
+                options.ConfigureDbContext = b => b.UseSqlServer(
+                    Configuration.GetConnectionString(ConnectionNames.IdentityServerConnection),
+                    sql =>
+                    {
+                        sql.MigrationsAssembly(migrationsAssembly);
+                        sql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    })
+                .ConfigureWarnings(warnings =>
+                warnings.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning));
+            })
+            .AddAspNetIdentity<ApplicationUser>();
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
@@ -65,7 +88,7 @@ namespace OnlineShop.IdentityServer
                 .AddGoogle(options =>
                 {
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                    
+
                     // register your IdentityServer with Google at https://console.developers.google.com
                     // enable the Google+ API
                     // set the redirect URI to https://localhost:5001/signin-google
@@ -97,7 +120,7 @@ namespace OnlineShop.IdentityServer
 
         private void InitalizeDb(IApplicationBuilder applicationBuilder)
         {
-            using(var serviceScope = applicationBuilder.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            using (var serviceScope = applicationBuilder.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
