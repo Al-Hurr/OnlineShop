@@ -29,6 +29,6 @@ namespace OnlineShop.Library.OrdersService.Models
         [Column(TypeName = "datetime2")]
         public DateTime Modified { get; set; }
 
-        public List<OrderedArticle> Articles { get; set; }
+        public List<OrderedArticle>? Articles { get; set; }
     }
 }
